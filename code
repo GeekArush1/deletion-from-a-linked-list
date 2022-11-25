@@ -1,0 +1,145 @@
+#include <iostream>
+using namespace std;
+struct node{
+    int info;
+    struct node *link;
+};
+typedef struct node node;
+void display_linked_list(node *node){
+    while(node!=NULL){
+        cout<<node->info<<endl;
+        node=node->link;
+    }
+}
+void insertion(node **head,int value){
+    node *new_element=(node *)malloc(sizeof(node));
+    new_element->info=value;
+    new_element->link=NULL;
+    if(*head==NULL){
+        *head=new_element;
+        return;
+    }
+    struct node *temp=*head;
+    while (temp->link!=NULL){
+        temp=temp->link;
+    }
+    temp->link=new_element;
+}
+void deletion_at_beg(node **head){
+    if(head==NULL){
+        cout<<"UNDERFLOW"<<endl;
+        return;
+    }
+    node *temp=*head;
+    temp=temp->link;
+    *head=temp;
+}
+void deletion_at_end(node **head){
+    if(head==NULL){
+        cout<<"UNDERFLOW"<<endl;
+        return;
+    }
+    node *temp=*head;
+    node *save=NULL;
+    while(temp->link){
+        save=temp;
+        temp=temp->link;
+    }
+    save->link=NULL;
+    free(temp);
+}
+void deletion_at_location(node **head, int loc){
+    node *tell=*head;
+    int x=0;
+    while(tell->link){
+        x++;
+        tell=tell->link;
+    }
+    if(loc>x){
+        cout<<"Please enter feasible location"<<endl;
+        return;
+    }
+    node *temp=*head;
+    node *save=NULL;
+    if(head==NULL){
+        cout<<"UNDERFLOW"<<endl;
+        return;
+    }
+    if(temp->link==NULL){
+        cout<<"No element left"<<endl;
+        return;
+    }
+    for(int i=0;i<loc;i++){
+        save=temp;
+        temp=temp->link;
+    }
+    save->link=temp->link;
+    temp->link=NULL;
+    free(temp);
+}
+void deletion_from_key(node **head, int key){
+    node *temp=*head;
+    node *save;
+    if(temp->link==NULL){
+        *head=NULL;
+        free(temp);
+        return;
+    }
+    if(temp!=NULL && temp->info==key){
+        *head=temp->link;
+        free(temp);
+        return;
+    }
+    while(temp!=NULL && temp->info!=key){
+        save=temp;
+        temp=temp->link;
+    }
+    if(temp==NULL){
+        cout<<"Value no found"<<endl;
+        return;
+    }
+    save->link=temp->link;
+    free(temp);
+}
+int main() {
+    int n,value,x,y;
+    cout<<"Enter number of elements to be added in a linked list"<<endl;
+    cin>>n;
+    node *head=NULL;
+    for(int i=0;i<n;i++){
+        cout<<"Enter value to be inserted"<<endl;
+        cin>>value;
+        insertion(&head,value);
+    }
+    display_linked_list(head);
+    cout<<"Enter number of deletions from the linked list"<<endl;
+    cin>>x;
+    cout<<"Print 1 for deletion from front, 2 for deletion from end, 3 for deletion from a location and 4 for deletion using a key value"<<endl;
+    cin>>y;
+    for(int i=0;i<x;i++){
+        if(y==1){
+            deletion_at_beg(&head);
+            display_linked_list(head);
+        }
+        if(y==2){
+            deletion_at_end(&head);
+            display_linked_list(head);
+        }
+        if(y==3){
+            int loc;
+            cout<<"Enter the location from where you want to delete the number"<<endl;
+            cin>>loc;
+            loc-=1;
+            deletion_at_location(&head, loc);
+            display_linked_list(head);
+;        }
+        if(y==4){
+            int key;
+            cout<<"Enter value to be deleted"<<endl;
+            cin>>key;
+            deletion_from_key(&head,key);
+            display_linked_list(head);
+        }
+    }
+    return 0;
+}
